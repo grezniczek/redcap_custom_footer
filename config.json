@@ -1,0 +1,198 @@
+{
+    "name": "Custom Footer",
+    "namespace": "RUB\\CustomFooterExternalModule",
+    "description": "Allows admins and project admins to add a custom footer to survey and project pages. <strong><a href=\"https://github.com/grezniczek/redcap_custom_footer\">See full documentation here</a></strong>.",
+    "permissions": [
+        "redcap_every_page_top",
+        "redcap_module_configure_button_display"
+    ],
+    "enable-every-page-hooks-on-system-pages": true,
+    "authors": [
+        {
+            "name": "Günther Rezniczek",
+            "email": "guenther.rezniczek@rub.de",
+            "institution": "Ruhr-Universität Bochum"
+        }
+    ],
+    "system-settings": [
+        {
+            "name": "Enabled on",
+            "key": "customfooter_system_enabled",
+            "type": "radio",
+            "choices": [
+                { "value": "disabled", "name": "Disabled" },
+                { "value": "dataentry", "name": "Project / Data Entry Pages" },
+                { "value": "survey", "name": "Survey Pages" },
+                { "value": "both", "name": "Both" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for project / data entry pages",
+            "key": "customfooter_system_dataentryfooter",
+            "type": "textarea",
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for survey pages (default = same)",
+            "key": "customfooter_system_samefooter",
+            "type": "radio",
+            "choices": [
+                { "value": "same", "name": "Same as for project / data entry pages" },
+                { "value": "different", "name": "Different" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for survey pages",
+            "key": "customfooter_system_surveyfooter",
+            "type": "textarea",
+            "branchingLogic": {
+                "field": "customfooter_system_samefooter",
+                "op": "=",
+                "value": "different"
+            },
+            "repeatable": false
+        },
+        {
+            "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project. The following option allows project admins of (selected) projects to override the system settings. Otherwise, project specific footers are shown together with the footer set on the system level.",
+            "key": "customfooter_system_description",
+            "type": "descriptive"
+        },
+        {
+            "name": "Allow project admins to configure settings (default = deny)",
+            "key": "customfooter_system_allowsettings",
+            "type": "radio",
+            "choices": [
+                { "value": "deny", "name": "Deny configuration" },
+                { "value": "all", "name": "Allow for all projects" },
+                { "value": "selected", "name": "Allow for selected projects only" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "List of project IDs where access to configuration is allowed (separate by commas and/or spaces)",
+            "key": "customfooter_system_allowsettingsids",
+            "type": "textarea",
+            "branchingLogic": {
+                "field": "customfooter_system_allowsettings",
+                "op": "=",
+                "value": "selected"
+            },
+            "repeatable": false
+        },
+        {
+            "name": "Allow override of system settings in projects",
+            "key": "customfooter_system_allowoverride",
+            "type": "radio",
+            "choices": [
+                { "value": "deny", "name": "Deny override" },
+                { "value": "all", "name": "Allow for all projects" },
+                { "value": "selected", "name": "Allow for selected projects only" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "List of project IDs that are allowed to override the system settings (separate by commas and/or spaces)",
+            "key": "customfooter_system_allowoverrideids",
+            "type": "textarea",
+            "branchingLogic": {
+                "field": "customfooter_system_allowoverride",
+                "op": "=",
+                "value": "selected"
+            },
+            "repeatable": false
+        },
+        {
+            "name": "Position of custom project footers",
+            "key": "customfooter_system_position",
+            "type": "radio",
+            "choices": [
+                { "value": "above", "name": "above system footers" },
+                { "value": "below", "name": "below system footers" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Project admins can override the position order",
+            "key": "customfooter_system_allowpositionoverride",
+            "type": "checkbox",
+            "repeatable": false
+        }
+    ],
+    "project-settings": [
+        {
+            "name": "Override system settings for project / data entry pages",
+            "key": "customfooter_project_dataentryoverride",
+            "type": "checkbox",
+            "repeatable": false
+        },
+        {
+            "name": "Override system settings for survey pages",
+            "key": "customfooter_project_surveyoverride",
+            "type": "checkbox",
+            "repeatable": false
+        },
+        {
+            "name": "Override footer position - show project footer",
+            "key": "customfooter_project_positionoverride",
+            "type": "radio",
+            "choices": [
+                { "value": "system", "name": "use system setting" },
+                { "value": "above", "name": "above system footer" },
+                { "value": "below", "name": "below system footer" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Note, the override settings above will only take effect if allowed by the REDCap administrator. If override is enabled, the footer set on the system level will be suppressed and only the project-specific footer will be shown. Otherwise, both will be shown.<br>Note, when the project footers are disabled, the system overrides will not be in effect.",
+            "key": "customfooter_project_description",
+            "type": "descriptive"
+        },
+        {
+            "name": "Enabled on",
+            "key": "customfooter_project_enabled",
+            "type": "radio",
+            "choices": [
+                { "value": "disabled", "name": "Disabled" },
+                { "value": "dataentry", "name": "Project / Data Entry Pages" },
+                { "value": "survey", "name": "Survey Pages" },
+                { "value": "both", "name": "Both" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for project / data entry pages",
+            "key": "customfooter_project_dataentryfooter",
+            "type": "textarea",
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for survey pages",
+            "key": "customfooter_project_samefooter",
+            "type": "radio",
+            "choices": [
+                { "value": "same", "name": "Same as for project / data entry pages" },
+                { "value": "different", "name": "Different" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for survey pages",
+            "key": "customfooter_project_surveyfooter",
+            "type": "textarea",
+            "branchingLogic": {
+                "field": "customfooter_project_samefooter",
+                "op": "=",
+                "value": "different"
+            },
+            "repeatable": false
+        }
+    ],
+    "compatibility": {
+        "php-version-min": "5.4.0",
+        "php-version-max": "",
+        "redcap-version-min": "8.1.0",
+        "redcap-version-max": ""
+     }
+}
