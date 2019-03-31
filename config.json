@@ -1,10 +1,12 @@
 {
     "name": "Custom Footer",
     "namespace": "RUB\\CustomFooterExternalModule",
-    "description": "Allows admins and project admins to add a custom footer to survey and project pages. <strong><a href=\"https://github.com/grezniczek/redcap_custom_footer\">See full documentation here</a></strong>.",
+    "description": "Allows admins and project admins to add a custom footer to survey and project pages. Depending on system settings, project admins may not be able to configure or disable this module. <strong><a href=\"https://github.com/grezniczek/redcap_custom_footer\">See full documentation here</a></strong>.",
     "permissions": [
         "redcap_every_page_top",
-        "redcap_module_configure_button_display"
+        "redcap_module_configure_button_display",
+        "redcap_module_project_disable",
+        "redcap_module_project_enable"
     ],
     "enable-every-page-hooks-on-system-pages": true,
     "authors": [
@@ -55,9 +57,31 @@
             "repeatable": false
         },
         {
-            "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project. The following option allows project admins of (selected) projects to override the system settings. Otherwise, project specific footers are shown together with the footer set on the system level.",
+            "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project. The following option allows project admins of (selected) projects to override the system settings. Otherwise, project specific footers are shown together with the footer set on the system level.<br>Note that superusers can always access the project configuration and disable this module for any project.",
             "key": "customfooter_system_description",
             "type": "descriptive"
+        },
+        {
+            "name": "Allow project admins to disable the module (default = all)",
+            "key": "customfooter_system_allowdisable",
+            "type": "radio",
+            "choices": [
+                { "value": "deny", "name": "Deny disabling of the module" },
+                { "value": "all", "name": "Allow for all projects" },
+                { "value": "selected", "name": "Allow for selected projects only" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "List of project IDs where disabling of the module is allowed (separate by commas and/or spaces)",
+            "key": "customfooter_system_allowdisableids",
+            "type": "textarea",
+            "branchingLogic": {
+                "field": "customfooter_system_allowdisable",
+                "op": "=",
+                "value": "selected"
+            },
+            "repeatable": false
         },
         {
             "name": "Allow project admins to configure settings (default = deny)",
@@ -187,6 +211,15 @@
                 "value": "different"
             },
             "repeatable": false
+        }
+    ],
+    "crons": [
+        {
+            "cron_name": "auto_reactivation",
+            "cron_description": "Automatically re-enables the module for projects based on the settings made by the REDCap Administrator. Runs every minute.",
+            "method": "reactivate",
+            "cron_frequency": "1",
+            "cron_max_run_time": "10"
         }
     ],
     "compatibility": {
