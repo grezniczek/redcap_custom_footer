@@ -2,10 +2,13 @@
 
 namespace RUB\CustomFooterExternalModule;
 
+
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
-
+/**
+ * A helper class that holds config information for this module.
+ */
 class NestedConfig {
     public $enabled;
     public $samefooter;
@@ -14,12 +17,23 @@ class NestedConfig {
     public $position;
 }
 
+/**
+ * A helper class that holds config information for this module.
+ */
 class Config {
+    /**
+     * @var NestedConfig
+     */
     public $System;
+    /**
+     * @var NestedConfig
+     */
     public $Project;
 
     public $allowsettings;
     public $allowsettingsids;
+    public $allowdisable;
+    public $allowdisableids;
     public $allowoverride;
     public $allowoverrideids;
     public $allowpositionoverride;
@@ -33,12 +47,15 @@ class Config {
 }
 
 /**
- * ExternalModule class for Instance-Type Indicator.
- * 
+ * ExternalModule class for Custom Footer.
  */
 class CustomFooterExternalModule extends AbstractExternalModule {
 
-    private $_configValuePrefix = "customfooter_";
+    public const CUSTOM_FOOTER_PLUGIN_KEY = "8b5fe59c-f5bd-45b8-81cf-79fdc16ff1c2";
+    public const CONFIGVALUE_PREFIX = "customfooter_";
+    private const AUTOREACTIVATION_KEY_SYSTEM = "system_autoreactivation";
+    private const AUTOREACTIVATION_KEY_PROJECT = "project_autoreactivation";
+
     private $_systemValues;
     private $_projectValues;
     private $_projectId;
@@ -54,10 +71,13 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      * system settings for this project (or for all projects).
      */
     function redcap_module_configure_button_display($project_id) {
+        // Superusers can always access configuration.
+        if (SUPER_USER) return true;
+        // Check project-specific settings.
         if ($project_id) {
             $config = $this->_getConfig($project_id);
             switch ($config->allowsettings) {
-                case "deny":
+                case "deny": 
                     return null;
                 case "all":
                     return true;
@@ -68,6 +88,67 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             }
         }
         return true;
+    }
+
+    /**
+     * Check whether disabling of this module is allowed, and if not, re-enable it.
+     */
+    function redcap_module_project_disable($version, $project_id) {
+        // Superusers are always allowed to disable.
+        //if (SUPER_USER) return;
+        // Get module configuration and check whether disabling for projects is allowed.
+        $config = $this->_getConfig($project_id);
+        if ($config->allowdisable == "all" ||
+            in_array($project_id, $config->allowdisableids, true)) 
+            return;
+        // Set the autoactivating flag. We don't really care about race conditions here,
+        // as we check for it later.
+        ExternalModules::setProjectSetting($this->PREFIX, $project_id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT, true);
+        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM);
+        $pending_reactivations .= " {$project_id}";
+        ExternalModules::setSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM, $pending_reactivations);
+        \REDCap::logEvent("Auto-reactivation of module {$this->PREFIX} scheduled for project {$project_id}.", null, null, null, null, $project_id);
+    }
+
+    /**
+     * Clear the autoactivation flag.
+     */
+    function redcap_module_project_enable($version, $project_id) {
+        ExternalModules::setProjectSetting($this->PREFIX, $project_id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT, false);
+    }
+
+    /**
+     * Cron
+     * Reactivates modules based on the autoreactivation setting.
+     */
+    function reactivate() {
+        // Read list of projects where the module needs to be reenabled.
+        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM);
+        // Immediately clear this setting. We are just assuming, that this happens
+        // so infrequently that we simply ignore the chance of a project id beeing added
+        // in between the read and write. Fingers crossed.
+        ExternalModules::setSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM, "");
+        $projectIds = $this->_parseIds($pending_reactivations);
+        foreach ($projectIds as $id) {
+            // Only reactivate when the project-specific setting says so.
+            $reactivate  = ExternalModules::getProjectSetting($this->PREFIX, $id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT);
+            if ($reactivate) {
+                ExternalModules::enableForProject($this->PREFIX, $this->VERSION, $id);
+                \REDCap::logEvent("Module {$this->PREFIX} was auto-reactivated for project {$id}.", null, null, null, null, $id);
+            }
+        }
+    }
+
+    /**
+     * Generates a GUID.
+     */
+    private function _getGuid() {
+        if (function_exists('com_create_guid') === true)
+        {
+            return trim(com_create_guid(), '{}');
+        }
+
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
     /**
@@ -87,10 +168,10 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      * This helper function assembles the config values based on 
      * the settings made in the External Module configuration.
      * 
-     * @return array 
+     * @return Config
      *   The configuration to act upon.
      */
-    private function _getConfig() {
+    private function _getConfig() : Config {
         // Cache settings values.
         $this->_systemValues = ExternalModules::getSystemSettingsAsArray($this->PREFIX);
         if ($this->_projectId) $this->_projectValues = ExternalModules::getProjectSettingsAsArray($this->PREFIX, $this->_projectId);
@@ -110,6 +191,8 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         }
         $config->allowsettings = $this->_getSystemValue("system_allowsettings", "deny");
         $config->allowsettingsids = $this->_parseIds($this->_getSystemValue("system_allowsettingsids", ""));
+        $config->allowdisable = $this->_getSystemValue("system_allowdisable", "all");
+        $config->allowdisableids = $this->_parseIds($this->_getSystemValue("system_allowdisableids", ""));
         $config->allowoverride = $this->_getSystemValue("system_allowoverride", "deny");
         $config->allowoverrideids = $this->_parseIds($this->_getSystemValue("system_allowoverrideids", ""));
         $config->System->position = $this->_getSystemValue("system_position", "above");
@@ -155,7 +238,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      *   The value of the setting as a string.
      */
     private function _getSystemValue($name, $default, $numeric = false) {
-        $fullname = $this->_configValuePrefix . $name;
+        $fullname = CustomFooterExternalModule::CONFIGVALUE_PREFIX . $name;
         $value = $this->_systemValues[$fullname]["system_value"];
         if (is_array($value)) $value = $value[0];
         if ($value == null) return $default;
@@ -177,7 +260,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      *   The value of the setting as a string.
      */
     private function _getProjectValue($name, $default, $numeric = false) {
-        $fullname = $this->_configValuePrefix . $name;
+        $fullname = CustomFooterExternalModule::CONFIGVALUE_PREFIX . $name;
         $value = $this->_projectValues[$fullname]["value"];
         if (is_array($value)) $value = $value[0];
         if ($value == null) return $default;
