@@ -67,7 +67,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
     }
 
     /**
-     * Only show the "Configure" button when this is enabled in the
+     * Only show the Configure button when this is enabled in the
      * system settings for this project (or for all projects).
      */
     function redcap_module_configure_button_display($project_id) {
@@ -91,7 +91,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
     }
 
     /**
-     * Check whether disabling of this module is allowed, and if not, re-enable it.
+     * Check whether disabling of this module is allowed, and if not, schedule reactivation.
      */
     function redcap_module_project_disable($version, $project_id) {
         // Superusers are always allowed to disable.
@@ -111,7 +111,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
     }
 
     /**
-     * Clear the autoactivation flag.
+     * Clear the autoactivation flag once the module is enabled for a project.
      */
     function redcap_module_project_enable($version, $project_id) {
         ExternalModules::setProjectSetting($this->PREFIX, $project_id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT, false);
@@ -137,18 +137,6 @@ class CustomFooterExternalModule extends AbstractExternalModule {
                 \REDCap::logEvent("Module {$this->PREFIX} was auto-reactivated for project {$id}.", null, null, null, null, $id);
             }
         }
-    }
-
-    /**
-     * Generates a GUID.
-     */
-    private function _getGuid() {
-        if (function_exists('com_create_guid') === true)
-        {
-            return trim(com_create_guid(), '{}');
-        }
-
-        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
     /**
