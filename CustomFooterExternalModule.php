@@ -37,9 +37,9 @@ class Config {
     public $allowdisableids;
     public $allowoverride;
     public $allowoverrideids;
-    public $allowpositionoverride;
     public $dataentryoverride;
     public $surveyoverride;
+    public $menutitle;
 
     function __construct() {
         $this->System = new NestedConfig();
@@ -148,19 +148,133 @@ class CustomFooterExternalModule extends AbstractExternalModule {
 
     //endregion
 
+    //region Build and inject footer
+
     /**
      * Build and inject the custom footer.
      */
     private function addCustomFooter() {
         $config = $this->_getConfig();
-        // Only do the work if the indicator is not 'disabled'.
-        if ($config->enabled !== "disabled") {
-            // Calculate some values up front.
+        $systemFooter = "";
+        $projectFooter = "";
+        $survey = $this->_isSurveyPage();
+        // Build system footer.
+        do {
+            // Is the system footer enabled?
+            if ($config->System->enabled == "disabled") break;
+            // Does the page type match?
+            if ($survey && $config->System->enabled == "dataentry") break;
+            if (!$survey && $config->System->enabled == "survey") break;
+            $systemFooter = $survey ?
+                ($config->System->samefooter == "same" ? $config->System->dataentryfooter : $config->System->surveyfooter) :
+                $config->System->dataentryfooter;
+        } while (false);
 
-            echo "<div style=\"z-index:2000;position:fixed;top:0;left:0;width:200px;height:20px;text-align:center;background-color:orange;color:white\"><b>CustomFooterModule</b></div>";
+        // Build project footer.
+        do {
+            // Is the project footer enabled?
+            if ($config->Project->enabled == "disabled") break;
+            // Does the page type match?
+            if ($survey && $config->Project->enabled == "dataentry") break;
+            if (!$survey && $config->Project->enabled == "survey") break;
+            $projectFooter = $survey ? 
+                ($config->Project->samefooter == "same" ? $config->Project->dataentryfooter : $config->Project->surveyfooter) :
+                $config->Project->dataentryfooter;
+            // Apply system overrides (if allowed).
+            if ($config->allowoverride == "all" || ($config->allowoverride == "selected" && in_array($this->_projectId, $config->allowoverrideids))) {
+                // Page type match?
+                if ((!$survey && $config->dataentryoverride) || ($survey && $config->surveyoverride)) {
+                    // Simply clear the system footer.
+                    $systemFooter = "";
+                }
+            }
+        } while (false);
+
+        // Determine position of project footer in relation to system footer.
+        $position = $config->System->position;
+        if ($config->Project->postion != "system" && ($config->allowoverride == "all" || ($config->allowoverride == "selected" && in_array($this->_projectId, $config->allowoverrideids)))) {
+            $position = $config->Project->position;
         }
+        // Sanitize footers (no <script> tags).
+        $systemFooter = str_ireplace("<script", "**REMOVED**", $systemFooter);
+        $projectFooter = str_ireplace("<script", "**REMOVED**", $projectFooter);
+        // Determine order.
+        $first = "system";
+        $firstFooter = $systemFooter;
+        $injectFirst = strlen($systemFooter) > 0 ? "true" : "false";
+        $second = "project";
+        $secondFooter = $projectFooter;
+        $injectSecond = strlen($projectFooter) > 0 ? "true" : "false";
+        if ($position == "above") {
+            $first = "project";
+            $firstFooter = $projectFooter;
+            $injectFirst = strlen($projectFooter) > 0 ? "true" : "false";
+            $second = "system";
+            $secondFooter = $systemFooter;
+            $injectSecond = strlen($systemFooter) > 0 ? "true" : "false";
+        }
+        // Construct menu title
+        $title = "";
+        if (strlen($config->menutitle) > 0) {
+            $title = '<div class="x-panel-header x-panel-header-leftmenu"><div style="float:left;">' . $config->menutitle . '</div></div>';
+        }
+        // Output the footer(s).
+        if ($injectFirst == "true") echo <<<EOF
+        <template id="{$this->PREFIX}_{$first}_footer_template">
+            <div id="{$this->PREFIX}_{$first}_footer">
+                {$firstFooter}
+            </div>
+        </template>
+EOF;
+        if ($injectSecond == "true") echo <<<EOF
+        <template id="{$this->PREFIX}_{$second}_footer_template">
+            <div id="{$this->PREFIX}_{$second}_footer">
+                {$secondFooter}
+            </div>
+        </template>
+EOF;
+        // To put this all in the right place, we will use JavaScript to determine
+        // the type of page we are on, by looking whether a div#footer exists. If 
+        // it does (survey pages, non-project system pages), we simply append the
+        // footers there. If not, then we create a new panel in the left side menu
+        // and add them there instead. Not ideal, but the existing "footer" (south) 
+        // is quite resilient to changes of its height ....
+
+        echo <<<EOF
+        <script>
+            $(function() {
+                var f = $("#footer")
+                if (f.prop("id") == "footer") {
+                    f.removeClass("hidden-xs")
+                    f.removeClass("d-none")
+                    f.css("display", "block")
+                    f.css("margin-top", "10px")
+                    f.children().css("margin-bottom", "10px")
+                    f.children().css("display", "inline-block")
+                    if ({$injectFirst}) f.append($("#{$this->PREFIX}_{$first}_footer_template").prop("content"))
+                    if ({$injectSecond}) {
+                         f.append($("#{$this->PREFIX}_{$second}_footer_template").prop("content"))
+                    }
+                }
+                else {
+                    const wrapper = $('<div class="x-panel">{$title}<div class="x-panel-bwrap"><div class="x-panel-body"><div class="menubox"><div class="menubox"></div></div></div></div></div>')
+                    f = wrapper.find("div.menubox:last")
+                    if ({$injectFirst}) f.append($("#{$this->PREFIX}_{$first}_footer_template").prop("content"))
+                    if ({$injectSecond}) {
+                        f.append($("#{$this->PREFIX}_{$second}_footer_template").prop("content"))
+                    }
+                    $("#west div.x-panel:last").after(wrapper)
+                }
+            })
+        </script>
+EOF;
     }
 
+    private function _isSurveyPage() {
+        return strpos($_SERVER[REQUEST_URI], APP_PATH_SURVEY) !== false;
+    }
+
+    //endregion
 
     //region Config Helpers
 
@@ -182,13 +296,8 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         // Read system configuration
         $config->System->enabled = $this->_getSystemValue("system_enabled", "disabled");
         $config->System->dataentryfooter = $this->_getSystemValue("system_dataentryfooter", "");
-        $config->System->samefooter = $this->_getSystemValue("system_same", "same");
-        if ($config->System->samefooter == "same") {
-            $config->System->surveyfooter = $config->System->dataentryfooter;
-        }
-        else {
-            $config->System->surveyfooter = $this->_getSystemValue("system_surveyfooter", "");
-        }
+        $config->System->samefooter = $this->_getSystemValue("system_samefooter", "same");
+        $config->System->surveyfooter = $this->_getSystemValue("system_surveyfooter", "");
         $config->allowsettings = $this->_getSystemValue("system_allowsettings", "deny");
         $config->allowsettingsids = $this->_parseIds($this->_getSystemValue("system_allowsettingsids", ""));
         $config->allowdisable = $this->_getSystemValue("system_allowdisable", "all");
@@ -196,24 +305,22 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         $config->allowoverride = $this->_getSystemValue("system_allowoverride", "deny");
         $config->allowoverrideids = $this->_parseIds($this->_getSystemValue("system_allowoverrideids", ""));
         $config->System->position = $this->_getSystemValue("system_position", "above");
-        $config->allowpositionoverride = $this->_getSystemValue("system_allowpositionoverride", false);
+        $config->menutitle = $this->_getSystemValue("system_menutitle", "");
 
         // Read project settings
         if ($this->_projectId) {
             $config->dataentryoverride = $this->_getProjectValue("project_dataentryoverride", false);
             $config->surveyoverride = $this->_getProjectValue("project_surveyoverride", false);
-            $positionoverride = $this->_getProjectValue("project_positionoverride", "system");
+            $config->Project->position = $this->_getProjectValue("project_positionoverride", "system");
             $config->Project->enabled = $this->_getProjectValue("project_enabled", "disabled");
             $config->Project->dataentryfooter = $this->_getProjectValue("project_dataentryfooter", "");
             $config->Project->samefooter = $this->_getProjectValue("project_samefooter", "same");
             $config->Project->surveyfooter = $this->_getProjectValue("project_surveyfooter", "");
-            $config->Project->position = $config->allowpositionoverride ?
-                $positionoverride : "system";
         }
         else {
             $config->dataentryoverride = false;
             $config->surveyoverride = false;
-            $config->Project->position = "systen";
+            $config->Project->position = "system";
             $config->Project->enabled = "disabled";
             $config->Project->dataentryfooter = "";
             $config->Project->samefooter = "same";
