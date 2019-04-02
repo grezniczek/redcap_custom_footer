@@ -30,6 +30,27 @@
             "repeatable": false
         },
         {
+            "name": "Title for section in left side menu (when footer is displayed on data entry pages)",
+            "key": "customfooter_system_menutitle",
+            "type": "text",
+            "branchingLogic": {
+                "type": "or",
+                "conditions": [
+                    {
+                        "field": "customfooter_system_enabled",
+                        "op": "=",
+                        "value": "dataentry"
+                    },
+                    {
+                        "field": "customfooter_system_enabled",
+                        "op": "=",
+                        "value": "both"
+                    }
+                ]
+            },
+            "repeatable": false
+        },
+        {
             "name": "Custom footer for project / data entry pages",
             "key": "customfooter_system_dataentryfooter",
             "type": "textarea",
@@ -135,12 +156,6 @@
                 { "value": "above", "name": "above system footers" },
                 { "value": "below", "name": "below system footers" }
             ],
-            "repeatable": false
-        },
-        {
-            "name": "Project admins can override the position order",
-            "key": "customfooter_system_allowpositionoverride",
-            "type": "checkbox",
             "repeatable": false
         }
     ],
