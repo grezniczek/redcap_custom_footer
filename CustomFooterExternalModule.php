@@ -2,9 +2,10 @@
 
 namespace RUB\CustomFooterExternalModule;
 
-
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
+
+//region Configuration Helper Classes
 
 /**
  * A helper class that holds config information for this module.
@@ -46,6 +47,8 @@ class Config {
     }
 }
 
+//endregion
+
 /**
  * ExternalModule class for Custom Footer.
  */
@@ -60,6 +63,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
     private $_projectValues;
     private $_projectId;
 
+    //region Hook implementations
 
     function redcap_every_page_top($project_id = null) {
         $this->_projectId = $project_id;
@@ -117,6 +121,10 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         ExternalModules::setProjectSetting($this->PREFIX, $project_id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT, false);
     }
 
+    //endregion
+
+    //region Crons
+
     /**
      * Cron
      * Reactivates modules based on the autoreactivation setting.
@@ -139,6 +147,8 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         }
     }
 
+    //endregion
+
     /**
      * Build and inject the custom footer.
      */
@@ -151,6 +161,9 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             echo "<div style=\"z-index:2000;position:fixed;top:0;left:0;width:200px;height:20px;text-align:center;background-color:orange;color:white\"><b>CustomFooterModule</b></div>";
         }
     }
+
+
+    //region Config Helpers
 
     /**
      * This helper function assembles the config values based on 
@@ -273,4 +286,6 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             array_push($ids, $match[1]);
         return $ids;
     }
+
+    //endregion
 }
