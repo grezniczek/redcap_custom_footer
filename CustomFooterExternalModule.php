@@ -54,9 +54,9 @@ class Config {
  */
 class CustomFooterExternalModule extends AbstractExternalModule {
 
-    public const CONFIGVALUE_PREFIX = "customfooter_";
-    private const AUTOREACTIVATION_KEY_SYSTEM = "system_autoreactivation";
-    private const AUTOREACTIVATION_KEY_PROJECT = "project_autoreactivation";
+    public $CONFIGVALUE_PREFIX = "customfooter_";
+    private $AUTOREACTIVATION_KEY_SYSTEM = "system_autoreactivation";
+    private $AUTOREACTIVATION_KEY_PROJECT = "project_autoreactivation";
 
     private $_systemValues;
     private $_projectValues;
@@ -106,10 +106,10 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             return;
         // Set the autoactivating flag. We don't really care about race conditions here,
         // as we check for it later.
-        ExternalModules::setProjectSetting($this->PREFIX, $project_id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT, true);
-        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM);
+        ExternalModules::setProjectSetting($this->PREFIX, $project_id, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, true);
+        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
         $pending_reactivations .= " {$project_id}";
-        ExternalModules::setSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM, $pending_reactivations);
+        ExternalModules::setSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, $pending_reactivations);
         \REDCap::logEvent("Auto-reactivation of module {$this->PREFIX} scheduled for project {$project_id}.", null, null, null, null, $project_id);
     }
 
@@ -117,7 +117,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      * Clear the autoactivation flag once the module is enabled for a project.
      */
     function redcap_module_project_enable($version, $project_id) {
-        ExternalModules::setProjectSetting($this->PREFIX, $project_id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT, false);
+        ExternalModules::setProjectSetting($this->PREFIX, $project_id, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, false);
     }
 
     //endregion
@@ -130,15 +130,15 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      */
     function reactivate() {
         // Read list of projects where the module needs to be reenabled.
-        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM);
+        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
         // Immediately clear this setting. We are just assuming, that this happens
         // so infrequently that we simply ignore the chance of a project id beeing added
         // in between the read and write. Fingers crossed.
-        ExternalModules::setSystemSetting($this->PREFIX, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_SYSTEM, "");
+        ExternalModules::setSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, "");
         $projectIds = $this->_parseIds($pending_reactivations);
         foreach ($projectIds as $id) {
             // Only reactivate when the project-specific setting says so.
-            $reactivate  = ExternalModules::getProjectSetting($this->PREFIX, $id, CustomFooterExternalModule::CONFIGVALUE_PREFIX . CustomFooterExternalModule::AUTOREACTIVATION_KEY_PROJECT);
+            $reactivate  = ExternalModules::getProjectSetting($this->PREFIX, $id, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT);
             if ($reactivate) {
                 ExternalModules::enableForProject($this->PREFIX, $this->VERSION, $id);
                 \REDCap::logEvent("Module {$this->PREFIX} was auto-reactivated for project {$id}.", null, null, null, null, $id);
@@ -345,7 +345,7 @@ EOF;
      *   The value of the setting as a string.
      */
     private function _getSystemValue($name, $default, $numeric = false) {
-        $fullname = CustomFooterExternalModule::CONFIGVALUE_PREFIX . $name;
+        $fullname = $this->CONFIGVALUE_PREFIX . $name;
         $value = $this->_systemValues[$fullname]["system_value"];
         if (is_array($value)) $value = $value[0];
         if ($value == null) return $default;
@@ -367,7 +367,7 @@ EOF;
      *   The value of the setting as a string.
      */
     private function _getProjectValue($name, $default, $numeric = false) {
-        $fullname = CustomFooterExternalModule::CONFIGVALUE_PREFIX . $name;
+        $fullname = $this->CONFIGVALUE_PREFIX . $name;
         $value = $this->_projectValues[$fullname]["value"];
         if (is_array($value)) $value = $value[0];
         if ($value == null) return $default;
