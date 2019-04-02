@@ -54,7 +54,6 @@ class Config {
  */
 class CustomFooterExternalModule extends AbstractExternalModule {
 
-    public const CUSTOM_FOOTER_PLUGIN_KEY = "8b5fe59c-f5bd-45b8-81cf-79fdc16ff1c2";
     public const CONFIGVALUE_PREFIX = "customfooter_";
     private const AUTOREACTIVATION_KEY_SYSTEM = "system_autoreactivation";
     private const AUTOREACTIVATION_KEY_PROJECT = "project_autoreactivation";
