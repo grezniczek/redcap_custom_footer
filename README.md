@@ -47,7 +47,7 @@ After enabling the module, REDCap administrators should configure the module and
 
 - **Custom footer for survey pages**: Choice to use the same custom footer as for data entry pages or a different one.
 
-As noted above, REDCap administrators will have full control over what project admins can do with regard to this module. System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project).
+As noted above, REDCap administrators will have full control over what project admins can do with regard to this module. System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not subsequently been disabled in a project).
 
 Note that superusers can always access the project configuration and disable this module for any project.
 
