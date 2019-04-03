@@ -78,8 +78,8 @@
             "repeatable": false
         },
         {
-            "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project. The following option allows project admins of (selected) projects to override the system settings. Otherwise, project specific footers are shown together with the footer set on the system level.<br>Note that superusers can always access the project configuration and disable this module for any project.",
-            "key": "customfooter_system_description",
+            "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project).<br>Note superusers can always access the project configuration and disable this module for any project.",
+            "key": "customfooter_system_description1",
             "type": "descriptive"
         },
         {
@@ -125,6 +125,11 @@
                 "value": "selected"
             },
             "repeatable": false
+        },
+        {
+            "name": "The following option allows project admins of (selected) projects to override the system footers (i.e. the system footer is suppressed and only the project footer is shown; otherwise, project specific footers are shown together with the footer set on the system level).",
+            "key": "customfooter_system_description2",
+            "type": "descriptive"
         },
         {
             "name": "Allow override of system settings in projects",
