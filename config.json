@@ -83,7 +83,7 @@
             "type": "descriptive"
         },
         {
-            "name": "Allow project admins to disable the module (default = all)",
+            "name": "Allow project admins to disable the module (default = deny)",
             "key": "customfooter_system_allowdisable",
             "type": "radio",
             "choices": [
