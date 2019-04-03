@@ -300,7 +300,7 @@ EOF;
         $config->System->surveyfooter = $this->_getSystemValue("system_surveyfooter", "");
         $config->allowsettings = $this->_getSystemValue("system_allowsettings", "deny");
         $config->allowsettingsids = $this->_parseIds($this->_getSystemValue("system_allowsettingsids", ""));
-        $config->allowdisable = $this->_getSystemValue("system_allowdisable", "all");
+        $config->allowdisable = $this->_getSystemValue("system_allowdisable", "deny");
         $config->allowdisableids = $this->_parseIds($this->_getSystemValue("system_allowdisableids", ""));
         $config->allowoverride = $this->_getSystemValue("system_allowoverride", "deny");
         $config->allowoverrideids = $this->_parseIds($this->_getSystemValue("system_allowoverrideids", ""));
