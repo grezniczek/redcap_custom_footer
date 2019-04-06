@@ -209,15 +209,6 @@
             "repeatable": false
         }
     ],
-    "crons": [
-        {
-            "cron_name": "auto_reactivation",
-            "cron_description": "Automatically re-enables the module for projects based on the settings made by the REDCap Administrator. Runs every minute.",
-            "method": "reactivate",
-            "cron_frequency": "1",
-            "cron_max_run_time": "10"
-        }
-    ],
     "compatibility": {
         "php-version-min": "5.4.0",
         "php-version-max": "",
