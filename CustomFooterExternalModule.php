@@ -106,10 +106,10 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             return;
         // Set the autoactivating flag. We don't really care about race conditions here,
         // as we check for it later.
-        ExternalModules::setProjectSetting($this->PREFIX, $project_id, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, true);
-        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
+        $this->setProjectSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, true, $project_id);
+        $pending_reactivations = $this->getSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
         $pending_reactivations .= " {$project_id}";
-        ExternalModules::setSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, $pending_reactivations);
+        $this->setSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, $pending_reactivations);
         \REDCap::logEvent("Auto-reactivation of module {$this->PREFIX} scheduled for project {$project_id}.", null, null, null, null, $project_id);
     }
 
@@ -117,7 +117,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      * Clear the autoactivation flag once the module is enabled for a project.
      */
     function redcap_module_project_enable($version, $project_id) {
-        ExternalModules::setProjectSetting($this->PREFIX, $project_id, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, false);
+        $this->setProjectSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, false, $project_id);
     }
 
     //endregion
@@ -130,18 +130,19 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      */
     function reactivate() {
         // Read list of projects where the module needs to be reenabled.
-        $pending_reactivations = ExternalModules::getSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
+        $pending_reactivations = $this->getSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
         // Immediately clear this setting. We are just assuming, that this happens
         // so infrequently that we simply ignore the chance of a project id beeing added
         // in between the read and write. Fingers crossed.
-        ExternalModules::setSystemSetting($this->PREFIX, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, "");
+        $this->setSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, "");
         $projectIds = $this->_parseIds($pending_reactivations);
-        foreach ($projectIds as $id) {
+        foreach ($projectIds as $pid) {
             // Only reactivate when the project-specific setting says so.
-            $reactivate  = ExternalModules::getProjectSetting($this->PREFIX, $id, $this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT);
+            $reactivate  = $this->getProjectSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, $pid);
             if ($reactivate) {
-                ExternalModules::enableForProject($this->PREFIX, $this->VERSION, $id);
-                \REDCap::logEvent("Module {$this->PREFIX} was auto-reactivated for project {$id}.", null, null, null, null, $id);
+                // Unfortunately, we need to call into ExternalModules here.
+                ExternalModules::enableForProject($this->PREFIX, $this->VERSION, $pid);
+                \REDCap::logEvent("Module {$this->PREFIX} was auto-reactivated for project {$pid}.", null, null, null, null, $pid);
             }
         }
     }
@@ -287,8 +288,8 @@ EOF;
      */
     private function _getConfig() : Config {
         // Cache settings values.
-        $this->_systemValues = ExternalModules::getSystemSettingsAsArray($this->PREFIX);
-        if ($this->_projectId) $this->_projectValues = ExternalModules::getProjectSettingsAsArray($this->PREFIX, $this->_projectId);
+        $this->_systemValues = $this->getSystemSettings();
+        if ($this->_projectId) $this->_projectValues = $this->getProjectSettings($this->_projectId);
 
         // Build the configuration.
         $config = new Config();
@@ -386,6 +387,7 @@ EOF;
      */
     private function _parseIds($raw) {
         $ids = array();
+        $matches = array();
         $re = '/\s*([0-9]+)/m';
         preg_match_all($re, $raw, $matches, PREG_SET_ORDER, 0);
         foreach ($matches as $match)
