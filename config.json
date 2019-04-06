@@ -4,9 +4,7 @@
     "description": "Allows admins and project admins to add a custom footer to survey and project pages. Depending on system settings, project admins may not be able to configure or disable this module. <strong><a href=\"https://github.com/grezniczek/redcap_custom_footer\">See full documentation here</a></strong>.",
     "permissions": [
         "redcap_every_page_top",
-        "redcap_module_configure_button_display",
-        "redcap_module_project_disable",
-        "redcap_module_project_enable"
+        "redcap_module_configure_button_display"
     ],
     "enable-every-page-hooks-on-system-pages": true,
     "authors": [
@@ -78,7 +76,7 @@
             "repeatable": false
         },
         {
-            "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project).<br>Note superusers can always access the project configuration and disable this module for any project.",
+            "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project).",
             "key": "customfooter_system_description1",
             "type": "descriptive"
         },
