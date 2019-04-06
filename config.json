@@ -83,28 +83,6 @@
             "type": "descriptive"
         },
         {
-            "name": "Allow project admins to disable the module (default = deny)",
-            "key": "customfooter_system_allowdisable",
-            "type": "radio",
-            "choices": [
-                { "value": "deny", "name": "Deny disabling of the module" },
-                { "value": "all", "name": "Allow for all projects" },
-                { "value": "selected", "name": "Allow for selected projects only" }
-            ],
-            "repeatable": false
-        },
-        {
-            "name": "List of project IDs where disabling of the module is allowed (separate by commas and/or spaces)",
-            "key": "customfooter_system_allowdisableids",
-            "type": "textarea",
-            "branchingLogic": {
-                "field": "customfooter_system_allowdisable",
-                "op": "=",
-                "value": "selected"
-            },
-            "repeatable": false
-        },
-        {
             "name": "Allow project admins to configure settings (default = deny)",
             "key": "customfooter_system_allowsettings",
             "type": "radio",

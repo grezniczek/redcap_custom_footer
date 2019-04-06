@@ -3,7 +3,6 @@
 namespace RUB\CustomFooterExternalModule;
 
 use ExternalModules\AbstractExternalModule;
-use ExternalModules\ExternalModules;
 
 //region Configuration Helper Classes
 
@@ -33,8 +32,6 @@ class Config {
 
     public $allowsettings;
     public $allowsettingsids;
-    public $allowdisable;
-    public $allowdisableids;
     public $allowoverride;
     public $allowoverrideids;
     public $dataentryoverride;
@@ -55,8 +52,6 @@ class Config {
 class CustomFooterExternalModule extends AbstractExternalModule {
 
     public $CONFIGVALUE_PREFIX = "customfooter_";
-    private $AUTOREACTIVATION_KEY_SYSTEM = "system_autoreactivation";
-    private $AUTOREACTIVATION_KEY_PROJECT = "project_autoreactivation";
 
     private $_systemValues;
     private $_projectValues;
@@ -91,60 +86,6 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             }
         }
         return true;
-    }
-
-    /**
-     * Check whether disabling of this module is allowed, and if not, schedule reactivation.
-     */
-    function redcap_module_project_disable($version, $project_id) {
-        // Superusers are always allowed to disable.
-        //if (SUPER_USER) return;
-        // Get module configuration and check whether disabling for projects is allowed.
-        $config = $this->_getConfig($project_id);
-        if ($config->allowdisable == "all" ||
-            in_array($project_id, $config->allowdisableids, true)) 
-            return;
-        // Set the autoactivating flag. We don't really care about race conditions here,
-        // as we check for it later.
-        $this->setProjectSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, true, $project_id);
-        $pending_reactivations = $this->getSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
-        $pending_reactivations .= " {$project_id}";
-        $this->setSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, $pending_reactivations);
-        \REDCap::logEvent("Auto-reactivation of module {$this->PREFIX} scheduled for project {$project_id}.", null, null, null, null, $project_id);
-    }
-
-    /**
-     * Clear the autoactivation flag once the module is enabled for a project.
-     */
-    function redcap_module_project_enable($version, $project_id) {
-        $this->setProjectSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, false, $project_id);
-    }
-
-    //endregion
-
-    //region Crons
-
-    /**
-     * Cron
-     * Reactivates modules based on the autoreactivation setting.
-     */
-    function reactivate() {
-        // Read list of projects where the module needs to be reenabled.
-        $pending_reactivations = $this->getSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM);
-        // Immediately clear this setting. We are just assuming, that this happens
-        // so infrequently that we simply ignore the chance of a project id beeing added
-        // in between the read and write. Fingers crossed.
-        $this->setSystemSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_SYSTEM, "");
-        $projectIds = $this->_parseIds($pending_reactivations);
-        foreach ($projectIds as $pid) {
-            // Only reactivate when the project-specific setting says so.
-            $reactivate  = $this->getProjectSetting($this->CONFIGVALUE_PREFIX . $this->AUTOREACTIVATION_KEY_PROJECT, $pid);
-            if ($reactivate) {
-                // Unfortunately, we need to call into ExternalModules here.
-                ExternalModules::enableForProject($this->PREFIX, $this->VERSION, $pid);
-                \REDCap::logEvent("Module {$this->PREFIX} was auto-reactivated for project {$pid}.", null, null, null, null, $pid);
-            }
-        }
     }
 
     //endregion
@@ -301,8 +242,6 @@ EOF;
         $config->System->surveyfooter = $this->_getSystemValue("system_surveyfooter", "");
         $config->allowsettings = $this->_getSystemValue("system_allowsettings", "deny");
         $config->allowsettingsids = $this->_parseIds($this->_getSystemValue("system_allowsettingsids", ""));
-        $config->allowdisable = $this->_getSystemValue("system_allowdisable", "deny");
-        $config->allowdisableids = $this->_parseIds($this->_getSystemValue("system_allowdisableids", ""));
         $config->allowoverride = $this->_getSystemValue("system_allowoverride", "deny");
         $config->allowoverrideids = $this->_parseIds($this->_getSystemValue("system_allowoverrideids", ""));
         $config->System->position = $this->_getSystemValue("system_position", "above");

@@ -30,7 +30,7 @@ Custom footer messages will be injected into REDCap pages depending on the page 
 
 ## Configuration
 
-Configuration of this module is designed such that the REDCap administrator is in total control of the module's settings, including control over what project admins can do. Notably, in order to inject any information in project pages, an External Module has to be activated for a project. While a REDCap administrator can enable a module for all projects by default, project admins can choose to disable modules at any time. This is problematic when there are legal requirements to display certain information on all pages at all times. Therefore, this module provides a system setting to disallow disabling of the module by project admins. Since at the time of this writing (REDCap 8.11.7), the REDCap External Module Framework does not support this, a custom mechanism has been implemented in this module that will reactivate the module automatically should it be disabled for a project without a superuser's authorization.
+Configuration of this module is designed such that the REDCap administrator is in total control of the module's settings, including control over what project admins can do.
 
 ### System-Level Settings
 
@@ -50,8 +50,6 @@ After enabling the module, REDCap administrators should configure the module and
 As noted above, REDCap administrators will have full control over what project admins can do with regard to this module. System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not subsequently been disabled in a project).
 
 Note that superusers can always access the project configuration and disable this module for any project.
-
-- **Allow project admins to disable the module**: Can be allowed for all or selected projects, or denied for all. When denied, projects admins will still see the *Disable* button, but the module will reactivate itself automatically (through a cron job running at a 1-minute-interval).
 
 - **Allow project admins to configure settings**: The *Configure* button can be hidden for all projects or enabled for all or only selected projects. By default, project-specific configuration of the module is prohibited.
 
