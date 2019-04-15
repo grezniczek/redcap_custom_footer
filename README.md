@@ -14,7 +14,7 @@ Since recently, REDCap provides *"Settings relating to Data Privacy (e.g., GDPR)
 
 Custom footer messages will be injected into REDCap pages depending on the page type:
 
-- **Survey pages**: Under the "Powerd by REDCap" line. The complete footer will remain visible even on small screens.
+- **Survey pages**: Under the "Powerd by REDCap" line. The complete footer will remain visible even on small screens. If the standard footer is missing, like on the survey reCAPTCHA page, it is added first.
 - **Project pages**: In the menu sidebar on the left side, as a new section following *Help & Information*.
 - **Other pages** (such as the login page or *Home* or *My Projects*): Under the REDCap version and copyright notice.
 
