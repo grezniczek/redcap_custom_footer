@@ -185,12 +185,19 @@ EOF;
         echo <<<EOF
         <script>
             $(function() {
+                // Survey page showing reCAPTCHA. Need to insert the footer first.
+                let footerMarginTop = 10
+                if ($("div.g-recaptcha").length == 1 && $("div.footer").length == 0) {
+                    footerMarginTop = -40
+                    $("#pagecontainer").append(`<div id="footer" class="d-sm-block col-md-12" aria-hidden="true" style="display: block;"><a href="https://projectredcap.org" tabindex="-1" target="_blank" style="margin-bottom: 10px; display: inline-block;">Powered by REDCap</a></div>`)
+                }
+                // Any page with a footer (but not project data entry pages).
                 var f = $("#footer")
                 if (f.prop("id") == "footer") {
                     f.removeClass("hidden-xs")
                     f.removeClass("d-none")
                     f.css("display", "block")
-                    f.css("margin-top", "10px")
+                    f.css("margin-top", `\${footerMarginTop}px`)
                     f.children().css("margin-bottom", "10px")
                     f.children().css("display", "inline-block")
                     if ({$injectFirst}) f.append($("#{$this->PREFIX}_{$first}_footer_template").prop("content"))
@@ -199,6 +206,7 @@ EOF;
                     }
                 }
                 else {
+                    // Data entry page.
                     const wrapper = $('<div class="x-panel">{$title}<div class="x-panel-bwrap"><div class="x-panel-body"><div class="menubox"><div class="menubox"></div></div></div></div></div>')
                     f = wrapper.find("div.menubox:last")
                     if ({$injectFirst}) f.append($("#{$this->PREFIX}_{$first}_footer_template").prop("content"))
