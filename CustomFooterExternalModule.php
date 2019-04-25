@@ -187,7 +187,7 @@ EOF;
             $(function() {
                 // Survey page showing reCAPTCHA. Need to insert the footer first.
                 let footerMarginTop = 10
-                if ($("div.g-recaptcha").length == 1 && $("div.footer").length == 0) {
+                if ($("div.g-recaptcha").length == 1 && $("div#footer").length == 0) {
                     footerMarginTop = -40
                     $("#pagecontainer").append(`<div id="footer" class="d-sm-block col-md-12" aria-hidden="true" style="display: block;"><a href="https://projectredcap.org" tabindex="-1" target="_blank" style="margin-bottom: 10px; display: inline-block;">Powered by REDCap</a></div>`)
                 }
