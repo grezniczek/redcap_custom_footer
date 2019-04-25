@@ -28,6 +28,12 @@
             "repeatable": false
         },
         {
+            "name": "Do not force a footer on pages lacking a #footer",
+            "key": "customfooter_system_notforced",
+            "type": "checkbox",
+            "repeatable": false
+        },
+        {
             "name": "Title for section in left side menu (when footer is displayed on data entry pages)",
             "key": "customfooter_system_menutitle",
             "type": "text",
