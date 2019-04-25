@@ -180,7 +180,7 @@ EOF;
         // it does (survey pages, non-project system pages), we simply append the
         // footers there. If not, then we create a new panel in the left side menu
         // and add them there instead. Not ideal, but the existing "footer" (south) 
-        // is quite resilient to changes of its height ....
+        // is quite resilient towards changes of its height ....
 
         echo <<<EOF
         <script>
