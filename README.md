@@ -80,7 +80,7 @@ The first three settings (overrides) only take effect when specifically allowed 
 ## Change Log
 
 Version | Updates
-- | -
+---- | ----
 1.1.0 | Fixed incompatibilities with IE11, added changelog.
 1.0.5 | Graceful handling of pages without #footer.
 1.0.4 | Bugfix in reCAPTCHA css selector.
