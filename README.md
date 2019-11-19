@@ -76,3 +76,15 @@ The first three settings (overrides) only take effect when specifically allowed 
   Add any Text/HTML to be injected as footer in data entry pages.
 
 - **Custom footer for survey pages**: Choice to use the same custom footer as for data entry pages or a different one.
+
+## Change Log
+
+Version | Updates
+- | -
+1.1.0 | Fixed incompatibilities with IE11, added changelog.
+1.0.5 | Graceful handling of pages without #footer.
+1.0.4 | Bugfix in reCAPTCHA css selector.
+1.0.3 | Show footer on reCAPTCHA pages.
+1.0.2 | Bugfix (config.json).
+1.0.1 | Removed unneeded permissions.
+1.0.0 | Initial release.
