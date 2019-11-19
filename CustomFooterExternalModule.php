@@ -165,18 +165,18 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         $addFooter = $config->notforced ? "false" : "true";
         // Output the footer(s).
         if ($injectFirst == "true") echo
-        "<template id=\"{$this->PREFIX}_{$first}_footer_template\">
+        "<div id=\"{$this->PREFIX}_{$first}_footer_template\" style=\"display:none;\">
             <div id=\"{$this->PREFIX}_{$first}_footer\">
                 {$firstFooter}
             </div>
-        </template>";
+        </div>";
 
         if ($injectSecond == "true") echo 
-        "<template id=\"{$this->PREFIX}_{$second}_footer_template\">
+        "<div id=\"{$this->PREFIX}_{$second}_footer_template\" style=\"display:none;\">
             <div id=\"{$this->PREFIX}_{$second}_footer\">
                 {$secondFooter}
             </div>
-        </template>";
+        </div>";
 
         // To put this all in the right place, we will use JavaScript to determine
         // the type of page we are on, by looking whether a div#footer exists. If 
@@ -193,31 +193,31 @@ class CustomFooterExternalModule extends AbstractExternalModule {
                     // Data entry page.
                     const wrapper = $('<div class=\"x-panel\">{$title}<div class=\"x-panel-bwrap\"><div class=\"x-panel-body\"><div class=\"menubox\"><div class=\"menubox\"></div></div></div></div></div>')
                     f = wrapper.find('div.menubox:last')
-                    if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer_template').prop('content'))
+                    if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer'))
                     if ({$injectSecond}) {
-                        f.append($('#{$this->PREFIX}_{$second}_footer_template').prop('content'))
+                        f.append($('#{$this->PREFIX}_{$second}_footer'))
                     }
                     $('#west div.x-panel:last').after(wrapper)
                 }
                 else {
                     // Any other page.
                     // Is there a footer? Give other modules a chance to add one. 200ms should be enough.
-                    let timeout = $('#footer').length == 0 ? 200 : 0
+                    const timeout = $('#footer').length == 0 ? 200 : 0
                     setTimeout(function() {
                         if ({$addFooter} && $('#footer').length == 0) {
                             // Let's add our own footer to inside #pagecontainer.
-                            $('#pagecontainer').append(`<div id=\"footer\" class=\"d-sm-block col-md-12\" aria-hidden=\"true\" style=\"display: block;\"><a href=\"https://projectredcap.org\" tabindex=\"-1\" target=\"_blank\" style=\"margin-bottom: 10px; display: inline-block;\">Powered by REDCap</a></div>`)
+                            $('#pagecontainer').append('<div id=\"footer\" class=\"d-sm-block col-md-12\" aria-hidden=\"true\" style=\"display: block;\"><a href=\"https://projectredcap.org\" tabindex=\"-1\" target=\"_blank\" style=\"margin-bottom: 10px; display: inline-block;\">Powered by REDCap</a></div>')
                         }
-                        let f = $('#footer')
+                        const f = $('#footer')
                         if (f.length == 1) {
                             f.removeClass('hidden-xs')
                             f.removeClass('d-none')
                             f.css('display', 'block')
                             f.children().css('margin-bottom', '10px')
                             f.children().css('display', 'inline-block')
-                            if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer_template').prop('content'))
+                            if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer'))
                             if ({$injectSecond}) {
-                                f.append($('#{$this->PREFIX}_{$second}_footer_template').prop('content'))
+                                f.append($('#{$this->PREFIX}_{$second}_footer'))
                             }
                         }
                     }, timeout) 
