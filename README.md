@@ -81,6 +81,7 @@ The first three settings (overrides) only take effect when specifically allowed 
 
 Version | Updates
 ---- | ----
+1.1.1 | Removed a type hint in the PHP code that would give an error in some PHP versions.
 1.1.0 | Fixed incompatibilities with IE11, added changelog.
 1.0.5 | Graceful handling of pages without #footer.
 1.0.4 | Bugfix in reCAPTCHA css selector.
