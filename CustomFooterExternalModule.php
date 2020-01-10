@@ -241,7 +241,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      * @return Config
      *   The configuration to act upon.
      */
-    private function _getConfig() : Config {
+    private function _getConfig() {
         // Cache settings values.
         $this->_systemValues = $this->getSystemSettings();
         if ($this->_projectId) $this->_projectValues = $this->getProjectSettings($this->_projectId);
