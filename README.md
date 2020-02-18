@@ -80,12 +80,13 @@ The first three settings (overrides) only take effect when specifically allowed 
 ## Change Log
 
 Version | Updates
----- | ----
-1.1.1 | Removed a type hint in the PHP code that would give an error in some PHP versions.
-1.1.0 | Fixed incompatibilities with IE11, added changelog.
-1.0.5 | Graceful handling of pages without #footer.
-1.0.4 | Bugfix in reCAPTCHA css selector.
-1.0.3 | Show footer on reCAPTCHA pages.
-1.0.2 | Bugfix (config.json).
-1.0.1 | Removed unneeded permissions.
-1.0.0 | Initial release.
+------- | ----
+1.1.2   | Bug fix.
+1.1.1   | Removed a type hint in the PHP code that would give an error in some PHP versions.
+1.1.0   | Fixed incompatibilities with IE11, added changelog.
+1.0.5   | Graceful handling of pages without #footer.
+1.0.4   | Bugfix in reCAPTCHA css selector.
+1.0.3   | Show footer on reCAPTCHA pages.
+1.0.2   | Bugfix (config.json).
+1.0.1   | Removed unneeded permissions.
+1.0.0   | Initial release.
