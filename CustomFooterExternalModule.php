@@ -187,11 +187,11 @@ class CustomFooterExternalModule extends AbstractExternalModule {
 
         echo 
         "<script>
-            $(function() {
+            if (typeof $ !== 'undefined') $(function() {
                 // Add custom footer at the appropriate place.
                 if ($('#west div.x-panel').length > 0) {
                     // Data entry page.
-                    const wrapper = $('<div class=\"x-panel\">{$title}<div class=\"x-panel-bwrap\"><div class=\"x-panel-body\"><div class=\"menubox\"><div class=\"menubox\"></div></div></div></div></div>')
+                    var wrapper = $('<div class=\"x-panel\">{$title}<div class=\"x-panel-bwrap\"><div class=\"x-panel-body\"><div class=\"menubox\"><div class=\"menubox\"></div></div></div></div></div>')
                     f = wrapper.find('div.menubox:last')
                     if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer'))
                     if ({$injectSecond}) {
@@ -202,13 +202,13 @@ class CustomFooterExternalModule extends AbstractExternalModule {
                 else {
                     // Any other page.
                     // Is there a footer? Give other modules a chance to add one. 200ms should be enough.
-                    const timeout = $('#footer').length == 0 ? 200 : 0
+                    var timeout = $('#footer').length == 0 ? 200 : 0
                     setTimeout(function() {
                         if ({$addFooter} && $('#footer').length == 0) {
                             // Let's add our own footer to inside #pagecontainer.
                             $('#pagecontainer').append('<div id=\"footer\" class=\"d-sm-block col-md-12\" aria-hidden=\"true\" style=\"display: block;\"><a href=\"https://projectredcap.org\" tabindex=\"-1\" target=\"_blank\" style=\"margin-bottom: 10px; display: inline-block;\">Powered by REDCap</a></div>')
                         }
-                        const f = $('#footer')
+                        var f = $('#footer')
                         if (f.length == 1) {
                             f.removeClass('hidden-xs')
                             f.removeClass('d-none')
