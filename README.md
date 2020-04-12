@@ -77,10 +77,15 @@ The first three settings (overrides) only take effect when specifically allowed 
 
 - **Custom footer for survey pages**: Choice to use the same custom footer as for data entry pages or a different one.
 
+## Testing
+
+Instructions for testing the module can be found [here](?prefix=redcap_custom_footer&page=tests/CustomFooterManualTest.md).
+
 ## Change Log
 
 Version | Updates
 ------- | ----
+1.1.3   | Add instructions for testing the module.
 1.1.2   | Bug fix.
 1.1.1   | Removed a type hint in the PHP code that would give an error in some PHP versions.
 1.1.0   | Fixed incompatibilities with IE11, added changelog.
