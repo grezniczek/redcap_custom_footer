@@ -12,8 +12,10 @@ use ExternalModules\AbstractExternalModule;
 class NestedConfig {
     public $enabled;
     public $samefooter;
+    public $samefooter_pe;
     public $dataentryfooter;
     public $surveyfooter;
+    public $pefooter;
     public $position;
 }
 
@@ -69,11 +71,11 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      * Only show the Configure button when this is enabled in the
      * system settings for this project (or for all projects).
      */
-    function redcap_module_configure_button_display($project_id) {
+    function redcap_module_configure_button_display($project_id = null) {
         // Superusers can always access configuration.
         if (SUPER_USER) return true;
         // Check project-specific settings.
-        if ($project_id) {
+        if ($project_id != null) {
             $config = $this->_getConfig($project_id);
             switch ($config->allowsettings) {
                 case "deny": 
@@ -101,6 +103,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         $systemFooter = "";
         $projectFooter = "";
         $survey = $this->_isSurveyPage();
+        $protectedemail = $this->_isProtectedEmailPage();
         // Build system footer.
         do {
             // Is the system footer enabled?
@@ -108,9 +111,15 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             // Does the page type match?
             if ($survey && $config->System->enabled == "dataentry") break;
             if (!$survey && $config->System->enabled == "survey") break;
-            $systemFooter = $survey ?
-                ($config->System->samefooter == "same" ? $config->System->dataentryfooter : $config->System->surveyfooter) :
-                $config->System->dataentryfooter;
+            if ($protectedemail) {
+                $systemFooter = $config->System->samefooter_pe == "same" ? $config->System->dataentryfooter : $config->System->pefooter;
+            }
+            else if ($survey) {
+                $systemFooter = $config->System->samefooter == "same" ? $config->System->dataentryfooter : $config->System->surveyfooter;
+            }
+            else {
+                $systemFooter = $config->System->dataentryfooter;
+            }
         } while (false);
 
         // Build project footer.
@@ -120,9 +129,15 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             // Does the page type match?
             if ($survey && $config->Project->enabled == "dataentry") break;
             if (!$survey && $config->Project->enabled == "survey") break;
-            $projectFooter = $survey ? 
-                ($config->Project->samefooter == "same" ? $config->Project->dataentryfooter : $config->Project->surveyfooter) :
-                $config->Project->dataentryfooter;
+            if ($protectedemail) {
+                $projectFooter = $config->Project->samefooter_pe == "same" ? $config->Project->dataentryfooter : $config->Project->pefooter;
+            }
+            else if ($survey) {
+                $projectFooter = $config->Project->samefooter == "same" ? $config->Project->dataentryfooter : $config->Project->surveyfooter;
+            }
+            else {
+                $projectFooter = $config->Project->dataentryfooter;
+            }
             // Apply system overrides (if allowed).
             if ($config->allowoverride == "all" || ($config->allowoverride == "selected" && in_array($this->_projectId, $config->allowoverrideids))) {
                 // Page type match?
@@ -227,7 +242,11 @@ class CustomFooterExternalModule extends AbstractExternalModule {
     }
 
     private function _isSurveyPage() {
-        return strpos($_SERVER[REQUEST_URI], APP_PATH_SURVEY) !== false;
+        return strpos($_SERVER["REQUEST_URI"], APP_PATH_SURVEY) !== false;
+    }
+
+    private function _isProtectedEmailPage() {
+        return (strpos($_SERVER["REQUEST_URI"], APP_PATH_SURVEY) !== false) && isset($_GET["__email"]) && !empty($_GET["__email"]);
     }
 
     //endregion
@@ -254,6 +273,8 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         $config->System->dataentryfooter = $this->_getSystemValue("system_dataentryfooter", "");
         $config->System->samefooter = $this->_getSystemValue("system_samefooter", "same");
         $config->System->surveyfooter = $this->_getSystemValue("system_surveyfooter", "");
+        $config->System->samefooter_pe = $this->_getSystemValue("system_samefooter_pe", "same");
+        $config->System->pefooter = $this->_getSystemValue("system_pefooter", "");
         $config->allowsettings = $this->_getSystemValue("system_allowsettings", "deny");
         $config->allowsettingsids = $this->_parseIds($this->_getSystemValue("system_allowsettingsids", ""));
         $config->allowoverride = $this->_getSystemValue("system_allowoverride", "deny");
@@ -271,6 +292,8 @@ class CustomFooterExternalModule extends AbstractExternalModule {
             $config->Project->dataentryfooter = $this->_getProjectValue("project_dataentryfooter", "");
             $config->Project->samefooter = $this->_getProjectValue("project_samefooter", "same");
             $config->Project->surveyfooter = $this->_getProjectValue("project_surveyfooter", "");
+            $config->Project->samefooter_pe = $this->_getProjectValue("project_samefooter_pe", "same");
+            $config->Project->pefooter = $this->_getProjectValue("project_pefooter", "");
         }
         else {
             $config->dataentryoverride = false;

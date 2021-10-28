@@ -2,6 +2,7 @@
     "name": "Custom Footer",
     "namespace": "RUB\\CustomFooterExternalModule",
     "description": "Allows admins and project admins to add a custom footer to survey and project pages. Depending on system settings, project admins may not be able to configure or disable this module. <strong><a href=\"https://github.com/grezniczek/redcap_custom_footer\">See full documentation here</a></strong>.",
+    "framework-version": 8,
     "permissions": [
         "redcap_every_page_top",
         "redcap_module_configure_button_display"
@@ -76,6 +77,27 @@
             "type": "textarea",
             "branchingLogic": {
                 "field": "customfooter_system_samefooter",
+                "op": "=",
+                "value": "different"
+            },
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for the protected email page (default = same)",
+            "key": "customfooter_system_samefooter_pe",
+            "type": "radio",
+            "choices": [
+                { "value": "same", "name": "Same as for project / data entry pages" },
+                { "value": "different", "name": "Different" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for the protected email page",
+            "key": "customfooter_system_pefooter",
+            "type": "textarea",
+            "branchingLogic": {
+                "field": "customfooter_system_samefooter_pe",
                 "op": "=",
                 "value": "different"
             },
@@ -160,6 +182,12 @@
             "repeatable": false
         },
         {
+            "name": "Override system settings for the protected email page",
+            "key": "customfooter_project_peoverride",
+            "type": "checkbox",
+            "repeatable": false
+        },
+        {
             "name": "Override footer position - show project footer",
             "key": "customfooter_project_positionoverride",
             "type": "radio",
@@ -213,12 +241,33 @@
                 "value": "different"
             },
             "repeatable": false
+        },
+        {
+            "name": "Custom footer for the protected email page",
+            "key": "customfooter_project_samefooter_pe",
+            "type": "radio",
+            "choices": [
+                { "value": "same", "name": "Same as for project / data entry pages" },
+                { "value": "different", "name": "Different" }
+            ],
+            "repeatable": false
+        },
+        {
+            "name": "Custom footer for the protected email page",
+            "key": "customfooter_project_pefooter",
+            "type": "textarea",
+            "branchingLogic": {
+                "field": "customfooter_project_samefooter_pe",
+                "op": "=",
+                "value": "different"
+            },
+            "repeatable": false
         }
     ],
     "compatibility": {
-        "php-version-min": "5.4.0",
+        "php-version-min": "5.6.0",
         "php-version-max": "",
-        "redcap-version-min": "8.1.0",
+        "redcap-version-min": "10.5.0",
         "redcap-version-max": ""
      }
 }

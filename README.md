@@ -48,7 +48,11 @@ After enabling the module, REDCap administrators should configure the module and
 - **Custom footer for project / data entry pages**:
   Add any Text/HTML to be injected as footer in data entry pages.
 
-- **Custom footer for survey pages**: Choice to use the same custom footer as for data entry pages or a different one.
+- **Custom footer for survey pages**:
+  Choice to use the same custom footer as for data entry pages or a different one.
+
+- **Custom footer for protected email page**:
+  Choice to use the same custom footer as for data entry pages or a different one.
 
 As noted above, REDCap administrators will have full control over what project admins can do with regard to this module. System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not subsequently been disabled in a project).
 
@@ -68,6 +72,8 @@ The first three settings (overrides) only take effect when specifically allowed 
 
 - **Override system settings for survey pages**: When enabled, the footer set at the system level for survey pages will be overriden (i.e. only the footer specified in the project settings will be shown; if this footer is blank, no footer will be shown).
 
+- **Override system settings for protected email page**: When enabled, the footer set at the system level for the protected email page will be overriden (i.e. only the footer specified in the project settings will be shown; if this footer is blank, no footer will be shown).
+
 - **Override footer position - show project footer**: Determines the order in which project and system footers are shown when both are enabled.
 
 - **Enabled on**: Specifies on what type of pages (data entry and/or survey pages) the custom footer is shown.
@@ -85,6 +91,7 @@ Instructions for testing the module can be found [here](?prefix=redcap_custom_fo
 
 Version | Updates
 ------- | ----
+1.2.0   | Adds a new custom footer to be set for the Protected Email page.
 1.1.3   | Add instructions for testing the module.
 1.1.2   | Bug fix.
 1.1.1   | Removed a type hint in the PHP code that would give an error in some PHP versions.
