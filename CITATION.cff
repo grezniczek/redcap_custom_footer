@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Rezniczek"
+  given-names: "Günther A."
+  orcid: "https://orcid.org/0000-0002-0852-6002"
+title: "Custom Footer"
+version: 1.2.1
+doi: 10.5281/zenodo.5749905
+date-released: 2021-11-08
+url: "https://github.com/grezniczek/redcap_custom_footer"

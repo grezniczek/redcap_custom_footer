@@ -103,3 +103,26 @@ Version | Updates
 1.0.2   | Bugfix (config.json).
 1.0.1   | Removed unneeded permissions.
 1.0.0   | Initial release.
+
+## How to cite this work
+
+If you use this external module for a project that generates a research output, feel free to cite this software in addition to [citing REDCap](https://projectredcap.org/resources/citations/) itself. You can do so using the APA referencing style as below:
+
+> Rezniczek, Günther A. (2021). Custom Footer [Computer Software]. https://github.com/grezniczek/redcap_custom_footer https://doi.org/10.5281/zenodo.5749905
+
+Or by adding this reference to your BibTeX database:
+
+```bibtex
+@software{rezniczek_gunther_a_2021_5749905,
+  author       = {Rezniczek, Günther A.},
+  title        = {Custom Footer},
+  month        = nov,
+  year         = 2021,
+  publisher    = {Zenodo},
+  version      = {1.2.1},
+  doi          = {10.5281/zenodo.5749905},
+  url          = {https://doi.org/10.5281/zenodo.5749905}
+}
+```
+
+These instructions are also available in [GitHub](https://github.com/grezniczek/redcap_custom_footer) under 'Cite This Repository'.
