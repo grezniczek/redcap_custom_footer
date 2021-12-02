@@ -1,5 +1,7 @@
 # REDCap Custom Footer
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5749905.svg)](https://doi.org/10.5281/zenodo.5749905)
+
 A REDCap External Module that allows system admins and project admins to add custom footers to REDCap pages (survey, project, and system pages).
 
 ## Purpose
