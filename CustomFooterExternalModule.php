@@ -73,7 +73,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      */
     function redcap_module_configure_button_display($project_id = null) {
         // Superusers can always access configuration.
-        if (SUPER_USER) return true;
+        if (defined("SUPER_USER") && SUPER_USER) return true;
         // Check project-specific settings.
         if ($project_id != null) {
             $config = $this->_getConfig($project_id);

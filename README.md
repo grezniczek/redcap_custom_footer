@@ -93,6 +93,7 @@ Instructions for testing the module can be found [here](?prefix=redcap_custom_fo
 
 Version | Updates
 ------- | ----
+1.2.2   | PHP8 compatibility updates.
 1.2.1   | Remove some dev files from release ZIP.
 1.2.0   | Adds a new custom footer to be set for the Protected Email page.
 1.1.3   | Add instructions for testing the module.
