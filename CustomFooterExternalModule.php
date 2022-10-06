@@ -346,7 +346,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      */
     private function _getProjectValue($name, $default, $numeric = false) {
         $fullname = $this->CONFIGVALUE_PREFIX . $name;
-        $value = ($this->_projectValues[$fullname] ?? [])["value"] ?? null;
+        $value = $this->_projectValues[$fullname] ?? null;
         if (is_array($value)) $value = $value[0] ?? null;
         if ($value == null) return $default;
         if ($numeric && !is_numeric($value)) return $default;
