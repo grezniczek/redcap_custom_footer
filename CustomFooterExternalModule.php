@@ -324,8 +324,8 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      */
     private function _getSystemValue($name, $default, $numeric = false) {
         $fullname = $this->CONFIGVALUE_PREFIX . $name;
-        $value = $this->_systemValues[$fullname]["system_value"];
-        if (is_array($value)) $value = $value[0];
+        $value = ($this->_systemValues[$fullname] ?? [])["system_value"] ?? null;
+        if (is_array($value)) $value = $value[0] ?? null;
         if ($value == null) return $default;
         if ($numeric && !is_numeric($value)) return $default;
         return $value;
@@ -346,8 +346,8 @@ class CustomFooterExternalModule extends AbstractExternalModule {
      */
     private function _getProjectValue($name, $default, $numeric = false) {
         $fullname = $this->CONFIGVALUE_PREFIX . $name;
-        $value = $this->_projectValues[$fullname]["value"];
-        if (is_array($value)) $value = $value[0];
+        $value = ($this->_projectValues[$fullname] ?? [])["value"] ?? null;
+        if (is_array($value)) $value = $value[0] ?? null;
         if ($value == null) return $default;
         if ($numeric && !is_numeric($value)) return $default;
         return $value;
