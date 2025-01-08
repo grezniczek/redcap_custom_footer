@@ -1,6 +1,6 @@
 # REDCap Custom Footer
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5749905.svg)](https://doi.org/10.5281/zenodo.5749905)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5749904.svg)](https://doi.org/10.5281/zenodo.5749904)
 
 A REDCap External Module that allows system admins and project admins to add custom footers to REDCap pages (survey, project, and system pages).
 
@@ -117,7 +117,7 @@ Version | Updates
 
 If you use this external module for a project that generates a research output, feel free to cite this software in addition to [citing REDCap](https://projectredcap.org/resources/citations/) itself. You can do so using the APA referencing style as below:
 
-> Rezniczek, G. A. (2025). Custom Footer (Version 1.3.0) [Computer software]. https://doi.org/10.5281/zenodo.5749905
+> Rezniczek, G. A. (2025). Custom Footer (Version 1.3.0) [Computer software]. https://doi.org/10.5281/zenodo.5749904
 
 Or by adding this reference to your BibTeX database:
 
@@ -128,7 +128,7 @@ Or by adding this reference to your BibTeX database:
   version = {1.3.0},
   year = {2025}
   month = {1},
-  doi = {10.5281/zenodo.5749905},
+  doi = {10.5281/zenodo.5749904},
   url = {https://github.com/grezniczek/redcap_custom_footer},
 }
 ```
