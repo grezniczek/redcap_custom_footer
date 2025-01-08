@@ -2,12 +2,9 @@
     "name": "Custom Footer",
     "namespace": "RUB\\CustomFooterExternalModule",
     "description": "Allows admins and project admins to add a custom footer to survey and project pages. Depending on system settings, project admins may not be able to configure or disable this module. <strong><a href=\"https://github.com/grezniczek/redcap_custom_footer\">See full documentation here</a></strong>.",
-    "framework-version": 8,
-    "permissions": [
-        "redcap_every_page_top",
-        "redcap_module_configure_button_display"
-    ],
+    "framework-version": 14,
     "enable-every-page-hooks-on-system-pages": true,
+    "enable-every-page-hooks-on-login-form": true,
     "authors": [
         {
             "name": "Günther Rezniczek",
@@ -25,14 +22,12 @@
                 { "value": "dataentry", "name": "Project / Data Entry Pages" },
                 { "value": "survey", "name": "Survey Pages" },
                 { "value": "both", "name": "Both" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "Do not force a footer on pages lacking a #footer",
             "key": "customfooter_system_notforced",
-            "type": "checkbox",
-            "repeatable": false
+            "type": "checkbox"
         },
         {
             "name": "Title for section in left side menu (when footer is displayed on data entry pages)",
@@ -52,14 +47,12 @@
                         "value": "both"
                     }
                 ]
-            },
-            "repeatable": false
+            }
         },
         {
             "name": "Custom footer for project / data entry pages",
             "key": "customfooter_system_dataentryfooter",
-            "type": "textarea",
-            "repeatable": false
+            "type": "textarea"
         },
         {
             "name": "Custom footer for survey pages (default = same)",
@@ -68,8 +61,7 @@
             "choices": [
                 { "value": "same", "name": "Same as for project / data entry pages" },
                 { "value": "different", "name": "Different" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "Custom footer for survey pages",
@@ -79,8 +71,7 @@
                 "field": "customfooter_system_samefooter",
                 "op": "=",
                 "value": "different"
-            },
-            "repeatable": false
+            }
         },
         {
             "name": "Custom footer for the protected email page (default = same)",
@@ -89,8 +80,7 @@
             "choices": [
                 { "value": "same", "name": "Same as for project / data entry pages" },
                 { "value": "different", "name": "Different" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "Custom footer for the protected email page",
@@ -100,8 +90,12 @@
                 "field": "customfooter_system_samefooter_pe",
                 "op": "=",
                 "value": "different"
-            },
-            "repeatable": false
+            }
+        },
+        {
+            "name": "Remove REDCap's cookie policy link",
+            "key": "customfooter_system_removecookiepolicy",
+            "type": "checkbox"
         },
         {
             "name": "System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not been subsequently disabled in a project).",
@@ -116,8 +110,7 @@
                 { "value": "deny", "name": "Deny configuration" },
                 { "value": "all", "name": "Allow for all projects" },
                 { "value": "selected", "name": "Allow for selected projects only" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "List of project IDs where access to configuration is allowed (separate by commas and/or spaces)",
@@ -127,8 +120,7 @@
                 "field": "customfooter_system_allowsettings",
                 "op": "=",
                 "value": "selected"
-            },
-            "repeatable": false
+            }
         },
         {
             "name": "The following option allows project admins of (selected) projects to override the system footers (i.e. the system footer is suppressed and only the project footer is shown; otherwise, project specific footers are shown together with the footer set on the system level).",
@@ -143,8 +135,7 @@
                 { "value": "deny", "name": "Deny override" },
                 { "value": "all", "name": "Allow for all projects" },
                 { "value": "selected", "name": "Allow for selected projects only" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "List of project IDs that are allowed to override the system settings (separate by commas and/or spaces)",
@@ -154,8 +145,7 @@
                 "field": "customfooter_system_allowoverride",
                 "op": "=",
                 "value": "selected"
-            },
-            "repeatable": false
+            }
         },
         {
             "name": "Position of custom project footers",
@@ -164,28 +154,24 @@
             "choices": [
                 { "value": "above", "name": "above system footers" },
                 { "value": "below", "name": "below system footers" }
-            ],
-            "repeatable": false
+            ]
         }
     ],
     "project-settings": [
         {
             "name": "Override system settings for project / data entry pages",
             "key": "customfooter_project_dataentryoverride",
-            "type": "checkbox",
-            "repeatable": false
+            "type": "checkbox"
         },
         {
             "name": "Override system settings for survey pages",
             "key": "customfooter_project_surveyoverride",
-            "type": "checkbox",
-            "repeatable": false
+            "type": "checkbox"
         },
         {
             "name": "Override system settings for the protected email page",
             "key": "customfooter_project_peoverride",
-            "type": "checkbox",
-            "repeatable": false
+            "type": "checkbox"
         },
         {
             "name": "Override footer position - show project footer",
@@ -195,8 +181,7 @@
                 { "value": "system", "name": "use system setting" },
                 { "value": "above", "name": "above system footer" },
                 { "value": "below", "name": "below system footer" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "Note, the override settings above will only take effect if allowed by the REDCap administrator. If override is enabled, the footer set on the system level will be suppressed and only the project-specific footer will be shown. Otherwise, both will be shown.<br>Note, when the project footers are disabled, the system overrides will not be in effect.",
@@ -212,14 +197,12 @@
                 { "value": "dataentry", "name": "Project / Data Entry Pages" },
                 { "value": "survey", "name": "Survey Pages" },
                 { "value": "both", "name": "Both" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "Custom footer for project / data entry pages",
             "key": "customfooter_project_dataentryfooter",
-            "type": "textarea",
-            "repeatable": false
+            "type": "textarea"
         },
         {
             "name": "Custom footer for survey pages",
@@ -228,8 +211,7 @@
             "choices": [
                 { "value": "same", "name": "Same as for project / data entry pages" },
                 { "value": "different", "name": "Different" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "Custom footer for survey pages",
@@ -239,8 +221,7 @@
                 "field": "customfooter_project_samefooter",
                 "op": "=",
                 "value": "different"
-            },
-            "repeatable": false
+            }
         },
         {
             "name": "Custom footer for the protected email page",
@@ -249,8 +230,7 @@
             "choices": [
                 { "value": "same", "name": "Same as for project / data entry pages" },
                 { "value": "different", "name": "Different" }
-            ],
-            "repeatable": false
+            ]
         },
         {
             "name": "Custom footer for the protected email page",
@@ -260,14 +240,7 @@
                 "field": "customfooter_project_samefooter_pe",
                 "op": "=",
                 "value": "different"
-            },
-            "repeatable": false
+            }
         }
-    ],
-    "compatibility": {
-        "php-version-min": "5.6.0",
-        "php-version-max": "",
-        "redcap-version-min": "10.5.0",
-        "redcap-version-max": ""
-     }
+    ]
 }

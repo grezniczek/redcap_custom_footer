@@ -56,6 +56,10 @@ After enabling the module, REDCap administrators should configure the module and
 - **Custom footer for protected email page**:
   Choice to use the same custom footer as for data entry pages or a different one.
 
+- **Remove REDCap's cookie policy link**:
+  When checked, the cookie policy link will be remove. This setting is global and cannot be overridden in projects.
+
+
 As noted above, REDCap administrators will have full control over what project admins can do with regard to this module. System settings will apply to all projects (provided the option to automatically activate this module on all projects by default is activated, and the module has not subsequently been disabled in a project).
 
 Note that superusers can always access the project configuration and disable this module for any project.
@@ -93,6 +97,7 @@ Instructions for testing the module can be found [here](?prefix=redcap_custom_fo
 
 Version | Updates
 ------- | ----
+1.3.0   | Add option to remove REDCap's cookie policy; minor bugfixes.
 1.2.3   | More PHP8 compatibility fixes.
 1.2.2   | PHP8 compatibility updates.
 1.2.1   | Remove some dev files from release ZIP.

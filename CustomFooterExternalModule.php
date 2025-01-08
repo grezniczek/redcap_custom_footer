@@ -39,7 +39,8 @@ class Config {
     public $dataentryoverride;
     public $surveyoverride;
     public $menutitle;
-    public $force;
+    public $notforced;
+    public $removecookiepolicy;
 
     function __construct() {
         $this->System = new NestedConfig();
@@ -150,7 +151,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
 
         // Determine position of project footer in relation to system footer.
         $position = $config->System->position;
-        if ($config->Project->postion != "system" && ($config->allowoverride == "all" || ($config->allowoverride == "selected" && in_array($this->_projectId, $config->allowoverrideids)))) {
+        if ($config->Project->position != "system" && ($config->allowoverride == "all" || ($config->allowoverride == "selected" && in_array($this->_projectId, $config->allowoverrideids)))) {
             $position = $config->Project->position;
         }
         // Sanitize footers (no <script> tags).
@@ -200,44 +201,47 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         // and add them there instead. Not ideal, but the existing "footer" (south) 
         // is quite resilient towards changes of its height ....
 
+        $removecookiepolicy = $config->removecookiepolicy ? "$('#footer span.mx-2').remove(); $('#footer a[href=\"javascript:;\"]').remove();" : "";
+
         echo 
         "<script>
             if (typeof $ !== 'undefined') $(function() {
                 // Add custom footer at the appropriate place.
                 if ($('#west div.x-panel').length > 0) {
                     // Data entry page.
-                    var wrapper = $('<div class=\"x-panel\">{$title}<div class=\"x-panel-bwrap\"><div class=\"x-panel-body\"><div class=\"menubox\"><div class=\"menubox\"></div></div></div></div></div>')
-                    f = wrapper.find('div.menubox:last')
-                    if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer'))
+                    var wrapper = $('<div class=\"x-panel\">{$title}<div class=\"x-panel-bwrap\"><div class=\"x-panel-body\"><div class=\"menubox\"><div class=\"menubox\"></div></div></div></div></div>');
+                    f = wrapper.find('div.menubox:last');
+                    if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer'));
                     if ({$injectSecond}) {
-                        f.append($('#{$this->PREFIX}_{$second}_footer'))
+                        f.append($('#{$this->PREFIX}_{$second}_footer'));
                     }
-                    $('#west div.x-panel:last').after(wrapper)
+                    $('#west div.x-panel:last').after(wrapper);
                 }
                 else {
                     // Any other page.
                     // Is there a footer? Give other modules a chance to add one. 200ms should be enough.
-                    var timeout = $('#footer').length == 0 ? 200 : 0
+                    var timeout = $('#footer').length == 0 ? 200 : 0;
                     setTimeout(function() {
                         if ({$addFooter} && $('#footer').length == 0) {
                             // Let's add our own footer to inside #pagecontainer.
-                            $('#pagecontainer').append('<div id=\"footer\" class=\"d-sm-block col-md-12\" aria-hidden=\"true\" style=\"display: block;\"><a href=\"https://projectredcap.org\" tabindex=\"-1\" target=\"_blank\" style=\"margin-bottom: 10px; display: inline-block;\">Powered by REDCap</a></div>')
+                            $('#pagecontainer').append('<div id=\"footer\" class=\"d-sm-block col-md-12\" aria-hidden=\"true\" style=\"display: block;\"><a href=\"https://projectredcap.org\" tabindex=\"-1\" target=\"_blank\" style=\"margin-bottom: 10px; display: inline-block;\">Powered by REDCap</a></div>');
                         }
-                        var f = $('#footer')
+                        var f = $('#footer');
                         if (f.length == 1) {
-                            f.removeClass('hidden-xs')
-                            f.removeClass('d-none')
-                            f.css('display', 'block')
-                            f.children().css('margin-bottom', '10px')
-                            f.children().css('display', 'inline-block')
-                            if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer'))
+                            f.removeClass('hidden-xs');
+                            f.removeClass('d-none');
+                            f.css('display', 'block');
+                            f.children().css('margin-bottom', '10px');
+                            f.children().css('display', 'inline-block');
+                            if ({$injectFirst}) f.append($('#{$this->PREFIX}_{$first}_footer'));
                             if ({$injectSecond}) {
-                                f.append($('#{$this->PREFIX}_{$second}_footer'))
+                                f.append($('#{$this->PREFIX}_{$second}_footer'));
                             }
                         }
-                    }, timeout) 
+                    }, timeout);
                 }
-            })
+                $removecookiepolicy
+            });
         </script>";
     }
 
@@ -282,6 +286,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         $config->System->position = $this->_getSystemValue("system_position", "above");
         $config->menutitle = $this->_getSystemValue("system_menutitle", "");
         $config->notforced = $this->_getSystemValue("system_notforced", false);
+        $config->removecookiepolicy = $this->_getSystemValue("system_removecookiepolicy", false);
 
         // Read project settings
         if ($this->_projectId) {
