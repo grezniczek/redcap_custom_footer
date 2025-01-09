@@ -97,6 +97,7 @@ Instructions for testing the module can be found [here](?prefix=redcap_custom_fo
 
 Version | Updates
 ------- | ----
+1.3.1   | Minor bugfix.
 1.3.0   | Add option to remove REDCap's cookie policy; minor bugfixes.
 1.2.3   | More PHP8 compatibility fixes.
 1.2.2   | PHP8 compatibility updates.
@@ -125,7 +126,7 @@ Or by adding this reference to your BibTeX database:
 @software{Rezniczek_Custom_Footer_2025,
   author = {Rezniczek, Günther A.},
   title = {{Custom Footer}},
-  version = {1.3.0},
+  version = {1.3.1},
   year = {2025}
   month = {1},
   doi = {10.5281/zenodo.5749904},

@@ -201,7 +201,7 @@ class CustomFooterExternalModule extends AbstractExternalModule {
         // and add them there instead. Not ideal, but the existing "footer" (south) 
         // is quite resilient towards changes of its height ....
 
-        $removecookiepolicy = $config->removecookiepolicy ? "$('#footer span.mx-2').remove(); $('#footer a[href=\"javascript:;\"]').remove();" : "";
+        $removecookiepolicy = $config->removecookiepolicy ? "$('#footer span.mx-2').last().remove(); $('#footer a[href=\"javascript:;\"]').remove();" : "";
 
         echo 
         "<script>
