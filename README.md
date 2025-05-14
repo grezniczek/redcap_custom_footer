@@ -127,9 +127,9 @@ Or by adding this reference to your BibTeX database:
 @software{Rezniczek_Custom_Footer_2025,
   author = {Rezniczek, Günther A.},
   title = {{Custom Footer}},
-  version = {1.3.1},
+  version = {1.3.2},
   year = {2025}
-  month = {1},
+  month = {5},
   doi = {10.5281/zenodo.5749904},
   url = {https://github.com/grezniczek/redcap_custom_footer},
 }
