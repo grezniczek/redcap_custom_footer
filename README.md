@@ -27,7 +27,7 @@ Custom footer messages will be injected into REDCap pages depending on the page 
 ## Installation
 
 - Clone this repo into `<redcap-root>/modules/redcap_custom_footer_v<version-number>`, or
-- Obtain this module from the Consortium [REDCap Repo](https://redcap.vanderbilt.edu/consortium/modules/index.php) via the Control Center.
+- Obtain this module from the Consortium [REDCap Repo](https://redcap.vumc.org/consortium/modules/index.php) via the Control Center.
 - Go to _Control Center > Technical / Developer Tools > External Modules_ and enable REDCap JavaScript Injector.
 
 ## Configuration
@@ -97,6 +97,7 @@ Instructions for testing the module can be found [here](?prefix=redcap_custom_fo
 
 Version | Updates
 ------- | ----
+1.3.2   | Fix Repo link in README.
 1.3.1   | Minor bugfix.
 1.3.0   | Add option to remove REDCap's cookie policy; minor bugfixes.
 1.2.3   | More PHP8 compatibility fixes.
